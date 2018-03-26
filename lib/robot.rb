@@ -1,54 +1,61 @@
 class Robot
-  def initialize(x,y,f,length, width)
-    @table = Table.new(length, width)
-    @x_position = x
-    @y_position = y
-    @direction = f || 'N' # Face north if no direction given
-    puts "Robot placed at #{x},#{y} and facing #{f} on the #{@table.length} by #{@table.width} table."
+  def initialize
+    @available_directions = ['NORTH', 'EAST', 'SOUTH', 'WEST']
   end
+  attr_accessor :x_position, :y_position, :current_direction
+  attr_reader :available_directions
 
-  attr_accessor :x_position, :y_position, :direction
-
-  def table
-    @table
-  end
-
-  def move
-    case self.direction
-      when 'N'
-        new_x = self.x_position
-        new_y = self.y_position + 1
-      when 'S'
-        new_x = self.x_position
-        new_y = self.y_position - 1
-      when 'E'
-        new_x = self.x_position + 1
-        new_y = self.y_position
-      when 'W'
-        new_x = self.x_position - 1
-        new_y = self.y_position
+  def place(x, y, f, table)
+    if table.valid?(x,y) && @available_directions.include?(f)
+      @x_position = x
+      @y_position = y
+      @current_direction = f || 'N' # Face north if no direction given
+      puts "Robot placed at #{x},#{y} and facing #{f} on the #{table.length} by #{table.width} table."
+    else
+      puts "Invalid position"
     end
-    if @table.valid?(new_x, new_y)
-      self.x_position = new_x
-      self.y_position = new_y
+  end
+
+  def move(table)
+    case @current_direction
+      when 'NORTH'
+        new_x = @x_position
+        new_y = @y_position + 1
+      when 'SOUTH'
+        new_x = @x_position
+        new_y = @y_position - 1
+      when 'EAST'
+        new_x = @x_position + 1
+        new_y = @y_position
+      when 'WEST'
+        new_x = @x_position - 1
+        new_y = @y_position
+    end
+    if table.valid?(new_x, new_y)
+      @x_position = new_x
+      @y_position = new_y
     else
       puts "The robot can't move without going off the table"
     end
   end
 
-  def turn(turn)
-    current_direction_index = @table.directions.find_index(self.direction)
+  def turn(table, turn)
+    current_direction_index = @available_directions.find_index(@current_direction)
     case turn
     when 'RIGHT'
       change_i = 1
     when 'LEFT'
       change_i = -1
     end
-    new_index = (current_direction_index + change_i) % @table.directions.size
-    self.direction = @table.directions[new_index]
+    new_index = (current_direction_index + change_i) % @available_directions.size
+    @current_direction = @available_directions[new_index]
   end
 
-  def report
-    puts "Robot is at #{self.x_position},#{self.y_position} and facing #{self.direction} on the #{@table.length} by #{@table.width} table"
+  def report(table)
+    if @x_position && @y_position
+      puts "Robot is at #{@x_position},#{@y_position} and facing #{@current_direction} on the #{table.length} by #{table.width} table"
+    else
+      puts 'The robot does not appear to be on the table'
+    end
   end
 end
