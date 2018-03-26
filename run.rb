@@ -3,29 +3,26 @@ require_relative 'lib/table'
 require_relative 'lib/robot'
 
 def control_robot(robot)
-  puts 'Enter a command:'
-  user_input = gets.strip
+  loop do
+    puts 'Enter a command (LEFT, RIGHT, MOVE, HELP, EXIT):'
+    user_input = gets.strip
 
-  case user_input
+    case user_input
     when 'HELP'
       puts INSTRUCTIONS
       gets
-      control_robot(robot)
     when 'EXIT'
       puts "\nGoodbye!!\n\n"  
       abort
     when 'MOVE'
       robot.move
-      control_robot(robot)
     when 'REPORT'
       robot.report
-      control_robot(robot)
     when 'LEFT', 'RIGHT'
       robot.turn(user_input)
-      control_robot(robot)
     else
       puts 'I don\'t understand.'
-      control_robot(robot)
+    end
   end
 end
 
@@ -39,27 +36,32 @@ def start_robot(input)
   y = start_array[1].to_i
   f = start_array[2]
   robot = Robot.new(x, y, f, table_length, table_width)
-  control_robot(robot)
+  if robot.table.valid?(x,y)
+    control_robot(robot)
+  else
+    puts 'Robot must be placed on the table'
+    welcome_menu
+  end
 end
 
-def welcome_menu()
-  puts WELCOME
+def welcome_menu
+  loop do
+    puts WELCOME
 
-  user_input = gets.strip
+    user_input = gets.strip
 
-  case user_input
+    case user_input
     when 'HELP'
       puts INSTRUCTIONS
       gets
-      welcome_menu
     when 'EXIT'
       puts "\nGoodbye!!\n\n"  
       abort
-    when /PLACE/
+    when /^PLACE*/
       start_robot(user_input)
     else
       puts 'I don\'t understand.'
-      welcome_menu
+    end
   end
 end
 

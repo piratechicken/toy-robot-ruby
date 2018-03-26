@@ -1,3 +1,5 @@
+From REA coding challenge:
+
 Toy Robot Simulator
 ===================
 

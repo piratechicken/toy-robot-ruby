@@ -1,18 +1,17 @@
 class Robot
   def initialize(x,y,f,length, width)
+    @table = Table.new(length, width)
     @x_position = x
     @y_position = y
-    @direction = f
-    # Add valid input check: integers and N/S/E/W
-    @table = Table.new(length, width)
-    if @table.valid?(x,y) 
-      puts "Robot placed at #{x},#{y} and facing #{f} on the #{@table.length} by #{@table.width} table."
-    else 
-      puts "Robot can't be placed there!"
-    end
+    @direction = f || 'N' # Face north if no direction given
+    puts "Robot placed at #{x},#{y} and facing #{f} on the #{@table.length} by #{@table.width} table."
   end
 
   attr_accessor :x_position, :y_position, :direction
+
+  def table
+    @table
+  end
 
   def move
     case self.direction
